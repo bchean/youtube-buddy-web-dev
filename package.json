@@ -1,0 +1,11 @@
+{
+  "name": "youtube-buddy-web-build",
+  "dependencies": {
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "express": "^4.13.4",
+    "gulp": "^3.9.1",
+    "reactify": "^1.1.1",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
