@@ -11,11 +11,13 @@ var babelify = require('babelify'),
 var REACT_FILENAME = 'react.js';
 var COMPONENTS_FILENAME = 'components.js';
 var OUTPUT_DIR = 'public';
+var SBOX_PAGES_GLOB = './jsx/*.jsx';
+var PROD_CMPS_PATH = '../production/jsx/components.jsx';
 
-gulp.task('generate-pages', function() {
+gulp.task('pages', function() {
     // Inspired by https://github.com/substack/node-browserify/issues/1044#issuecomment-72384131
     // Generate sandbox page for each individual jsx file.
-    return gulp.src('jsx/*.jsx')
+    return gulp.src(SBOX_PAGES_GLOB)
     .pipe(through2.obj(function(vinylFile, encoding, callback) {
         browserify()
         .add(vinylFile.path)
@@ -46,18 +48,18 @@ gulp.task('generate-pages', function() {
     .pipe(gulp.dest(OUTPUT_DIR));
 });
 
-gulp.task('compile-cmps', function() {
+gulp.task('cmps', function() {
     logFileCreation(COMPONENTS_FILENAME);
     return browserify()
     .external('react')
-    .require('../production/jsx/components.jsx', {expose: 'prod-components'})
+    .require(PROD_CMPS_PATH, {expose: 'prod-components'})
     .transform(babelify, {presets: ['es2015', 'react']})
     .bundle()
     .pipe(vinylSource(COMPONENTS_FILENAME))
     .pipe(gulp.dest(OUTPUT_DIR));
 });
 
-gulp.task('bundle-react', function() {
+gulp.task('react', function() {
     logFileCreation(REACT_FILENAME);
     return browserify()
     .require(['react', 'react-dom'])
@@ -68,9 +70,14 @@ gulp.task('bundle-react', function() {
     .pipe(gulp.dest(OUTPUT_DIR));
 });
 
-gulp.task('pages-and-cmps', ['generate-pages', 'compile-cmps']);
-gulp.task('all', ['generate-pages', 'compile-cmps', 'bundle-react']);
-gulp.task('default', ['generate-pages']);
+gulp.task('watch', function() {
+    gulp.watch(SBOX_PAGES_GLOB, ['pages']);
+    gulp.watch(PROD_CMPS_PATH, ['cmps']);
+});
+
+gulp.task('pages-and-cmps', ['pages', 'cmps']);
+gulp.task('all', ['pages', 'cmps', 'react']);
+gulp.task('default', ['pages']);
 
 function logFileCreation(filename) {
     console.log('Creating \'' + OUTPUT_DIR + '/' + filename + '\'...');
