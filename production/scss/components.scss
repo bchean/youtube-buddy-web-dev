@@ -1,0 +1,50 @@
+// TODO Figure out production strategy...
+@import 'https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css';
+
+/**
+ * border-box by default, allowing for overrides.
+ * https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
+ */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.pingstat {
+    :not(:last-child) {
+        margin-right: 8px;
+    }
+}
+
+.pingstatbar {
+    display: inline-block;
+
+    :not(:last-child) {
+        margin-right: 1px;
+    }
+}
+
+.pingstatbarbox {
+    display: inline-block;
+    height: 0.75em;
+    width: 0.75em;
+
+    border: 1px solid #49b;
+    border-radius: 25%;
+
+    &.filled {
+        background-color: #7cf;
+    }
+}
+
+.pingstatvideolink {
+    display: inline-block;
+    background-color: #df9;
+}
+
+.pingstatdatetime {
+    display: inline-block;
+    background-color: #fda;
+}

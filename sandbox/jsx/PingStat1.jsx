@@ -3,7 +3,8 @@ var React = require('react'),
     PingStat = require('prod-components').PingStat;
 
 ReactDOM.render(
-    <PingStat numPings={5}
+    <PingStat numPings={6}
+              numPingsUpperBenchmark={13}
               youtubeId={"ytid"}
               title={"title"}
               dateTimeLastPing={Date.now()} />,

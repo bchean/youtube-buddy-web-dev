@@ -3,6 +3,7 @@ var babelify = require('babelify'),
     gulp = require('gulp'),
     reactify = require('reactify'),
     rename = require('gulp-rename'),
+    sass = require('gulp-sass'),
     through2 = require('through2'),
     uglify = require('gulp-uglify'),
     vinylBuffer = require('vinyl-buffer'),
@@ -10,9 +11,12 @@ var babelify = require('babelify'),
 
 var REACT_FILENAME = 'react.js';
 var COMPONENTS_FILENAME = 'components.js';
+var CSS_FILENAME = 'components.css';
 var OUTPUT_DIR = 'public';
+
 var SBOX_PAGES_GLOB = './jsx/*.jsx';
 var PROD_CMPS_PATH = '../production/jsx/components.jsx';
+var PROD_CSS_PATH = '../production/scss/components.scss';
 
 gulp.task('pages', function() {
     // Inspired by https://github.com/substack/node-browserify/issues/1044#issuecomment-72384131
@@ -30,6 +34,7 @@ gulp.task('pages', function() {
                 // Wrap js in an html page.
                 var browserifiedJs = buf.toString();
                 var newPageMarkup = '<html><body>' +
+                    '<link href="' + CSS_FILENAME + '" rel="stylesheet">' +
                     '<div id="cmp-goes-here"></div>' +
                     '<script src="' + REACT_FILENAME + '"></script>'+
                     '<script src="' + COMPONENTS_FILENAME + '"></script>'+
@@ -59,6 +64,13 @@ gulp.task('cmps', function() {
     .pipe(gulp.dest(OUTPUT_DIR));
 });
 
+gulp.task('css', function() {
+    logFileCreation(CSS_FILENAME);
+    return gulp.src(PROD_CSS_PATH)
+    .pipe(sass({outputStyle: 'expanded'}))
+    .pipe(gulp.dest(OUTPUT_DIR));
+});
+
 gulp.task('react', function() {
     logFileCreation(REACT_FILENAME);
     return browserify()
@@ -73,10 +85,12 @@ gulp.task('react', function() {
 gulp.task('watch', function() {
     gulp.watch(SBOX_PAGES_GLOB, ['pages']);
     gulp.watch(PROD_CMPS_PATH, ['cmps']);
+    gulp.watch(PROD_CSS_PATH, ['css']);
 });
 
 gulp.task('pages-and-cmps', ['pages', 'cmps']);
-gulp.task('all', ['pages', 'cmps', 'react']);
+gulp.task('cmps-and-css', ['cmps', 'css']);
+gulp.task('all', ['pages', 'cmps', 'css', 'react']);
 gulp.task('default', ['pages']);
 
 function logFileCreation(filename) {
