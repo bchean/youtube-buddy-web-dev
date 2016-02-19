@@ -8,4 +8,4 @@ ReactDOM.render(
               youtubeId={"ytid"}
               title={"title"}
               dateTimeLastPing={Date.now()} />,
-    document.getElementById('cmp-goes-here'));
+    document.getElementById('cmp1'));

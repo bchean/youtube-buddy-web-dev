@@ -35,7 +35,11 @@ gulp.task('pages', function() {
                 var browserifiedJs = buf.toString();
                 var newPageMarkup = '<html><body>' +
                     '<link href="' + CSS_FILENAME + '" rel="stylesheet">' +
-                    '<div id="cmp-goes-here"></div>' +
+                    '<link href="https://fonts.googleapis.com/css?family=Jaldi:700|Yantramanav" rel="stylesheet" type="text/css">' +
+                    '<div id="css"></div>' +
+                    '<div id="cmp1"></div>' +
+                    '<div id="cmp2"></div>' +
+                    '<div id="cmp3"></div>' +
                     '<script src="' + REACT_FILENAME + '"></script>'+
                     '<script src="' + COMPONENTS_FILENAME + '"></script>'+
                     '<script>' + browserifiedJs + '</script>' +

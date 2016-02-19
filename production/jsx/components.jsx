@@ -14,7 +14,7 @@ class PingStat extends React.Component {
 
 class PingStatBar extends React.Component {
     render() {
-        var numFilledBoxes = Math.round(this.props.numPings / this.props.numPingsUpperBenchmark * this.props.numBoxesToDisplay);
+        var numFilledBoxes = this.calculateNumFilledBoxes();
         var numEmptyBoxes = this.props.numBoxesToDisplay - numFilledBoxes;
         var boxesMarkup = [];
         for (var i = 0; i < numEmptyBoxes; i++) {
@@ -28,6 +28,14 @@ class PingStatBar extends React.Component {
                 {boxesMarkup}
             </div>
         )
+    }
+
+    calculateNumFilledBoxes() {
+        var n = this.props.numPings / this.props.numPingsUpperBenchmark;
+        n = n * this.props.numBoxesToDisplay;
+        n = Math.round(n);
+        n = Math.max(n, 1);
+        return n;
     }
 }
 PingStatBar.defaultProps = {
@@ -67,7 +75,7 @@ class PingStatDateTime extends React.Component {
         var dateTimeCurrentLocale = new Date(this.props.dateTimeLastPing).toLocaleString();
         return (
             <div className="pingstatdatetime">
-                <span><i>{dateTimeCurrentLocale}</i></span>
+                <span>{dateTimeCurrentLocale}</span>
             </div>
         )
     }
