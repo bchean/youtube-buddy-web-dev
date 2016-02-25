@@ -1,11 +1,44 @@
-var React = require('react');
+var React = require('react'),
+    $ = require('jquery');
 
 class ListOfPingStat extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            pingStatPropsList: []
+        };
+    }
+
+    componentDidMount() {
+        if (this.props.restEndpoint) {
+            this.serverRequest = $.get(this.props.restEndpoint, function(res) {
+                // TODO Response error handling.
+                this.updateListContents(res);
+            }.bind(this));
+        } else if (this.props.pingStatPropsList) {
+            // This prop exists only for testing purposes.
+            this.updateListContents(this.props.pingStatPropsList);
+        } else {
+            throw new Error('Invalid props passed to component.');
+        }
+    }
+
+    updateListContents(pingStatPropsList) {
+        this.setState({
+            pingStatPropsList: pingStatPropsList
+        });
+    }
+
+    componentWillUnmount() {
+        if (this.serverRequest) {
+            this.serverRequest.abort();
+        }
+    }
+
     render() {
-        // TODO Replace attribute-based data injection with ajax.
         return (
             <div className="listofpingstat">
-                {this.props.propsList.map(function(pingStatProps) {
+                {this.state.pingStatPropsList.map(function(pingStatProps) {
                     return <PingStat {...pingStatProps} />;
                 })}
             </div>

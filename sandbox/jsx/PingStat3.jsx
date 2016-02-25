@@ -5,7 +5,7 @@ var React = require('react'),
 var numPingsUpperBenchmark = 21;
 
 ReactDOM.render(
-    <ListOfPingStat propsList={[
+    <ListOfPingStat pingStatPropsList={[
         {
             numPings: 19,
             numPingsUpperBenchmark: numPingsUpperBenchmark,

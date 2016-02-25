@@ -1,7 +1,6 @@
 var babelify = require('babelify'),
     browserify = require('browserify'),
     gulp = require('gulp'),
-    reactify = require('reactify'),
     rename = require('gulp-rename'),
     sass = require('gulp-sass'),
     through2 = require('through2'),
@@ -9,7 +8,7 @@ var babelify = require('babelify'),
     vinylBuffer = require('vinyl-buffer'),
     vinylSource = require('vinyl-source-stream');
 
-var REACT_FILENAME = 'react.js';
+var VENDOR_FILENAME = 'react.js';
 var COMPONENTS_FILENAME = 'components.js';
 var CSS_FILENAME = 'components.css';
 var OUTPUT_DIR = 'public';
@@ -40,7 +39,7 @@ gulp.task('pages', function() {
                     '<div id="cmp1"></div>' +
                     '<div id="cmp2"></div>' +
                     '<div id="cmp3"></div>' +
-                    '<script src="' + REACT_FILENAME + '"></script>'+
+                    '<script src="' + VENDOR_FILENAME + '"></script>'+
                     '<script src="' + COMPONENTS_FILENAME + '"></script>'+
                     '<script>' + browserifiedJs + '</script>' +
                     '</body></html>';
@@ -60,7 +59,7 @@ gulp.task('pages', function() {
 gulp.task('cmps', function() {
     logFileCreation(COMPONENTS_FILENAME);
     return browserify()
-    .external('react')
+    .external('react', 'jquery')
     .require(PROD_CMPS_PATH, {expose: 'prod-components'})
     .transform(babelify, {presets: ['es2015', 'react']})
     .bundle()
@@ -75,12 +74,12 @@ gulp.task('css', function() {
     .pipe(gulp.dest(OUTPUT_DIR));
 });
 
-gulp.task('react', function() {
-    logFileCreation(REACT_FILENAME);
+gulp.task('vendor', function() {
+    logFileCreation(VENDOR_FILENAME);
     return browserify()
-    .require(['react', 'react-dom'])
+    .require(['react', 'react-dom', 'jquery'])
     .bundle()
-    .pipe(vinylSource(REACT_FILENAME))
+    .pipe(vinylSource(VENDOR_FILENAME))
     .pipe(vinylBuffer())
     .pipe(uglify())
     .pipe(gulp.dest(OUTPUT_DIR));
@@ -94,7 +93,7 @@ gulp.task('watch', function() {
 
 gulp.task('pages-and-cmps', ['pages', 'cmps']);
 gulp.task('cmps-and-css', ['cmps', 'css']);
-gulp.task('all', ['pages', 'cmps', 'css', 'react']);
+gulp.task('all', ['pages', 'cmps', 'css', 'vendor']);
 gulp.task('default', ['pages']);
 
 function logFileCreation(filename) {
