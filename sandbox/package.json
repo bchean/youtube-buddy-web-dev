@@ -5,6 +5,7 @@
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
+    "express": "^4.13.4",
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.2.0",
@@ -12,6 +13,7 @@
     "jquery": "^2.2.1",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
+    "serve-index": "^1.7.3",
     "through2": "^2.0.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"

@@ -30,3 +30,5 @@ gulp.task('watch', function() {
     gulp.watch(INDEXJSX_FILEPATH, ['page']);
     gulp.watch(INDEXSCSS_FILEPATH, ['css']);
 });
+
+gulp.task('all', ['page', 'css']);

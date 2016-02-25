@@ -11,10 +11,17 @@ class ListOfPingStat extends React.Component {
 
     componentDidMount() {
         if (this.props.restEndpoint) {
-            this.serverRequest = $.get(this.props.restEndpoint, function(res) {
-                // TODO Response error handling.
+            this.serverRequest = $.get({
+                url: this.props.restEndpoint,
+                data: {sinceDateTime: this.props.sinceDateTime},
+                dataType: 'json'
+            })
+            .done(function(res) {
                 this.updateListContents(res);
-            }.bind(this));
+            }.bind(this))
+            .fail(function(jqXHR, textStatus, errThrown) {
+                // TODO Response error handling.
+            });
         } else if (this.props.pingStatPropsList) {
             // This prop exists only for testing purposes.
             this.updateListContents(this.props.pingStatPropsList);
@@ -36,15 +43,18 @@ class ListOfPingStat extends React.Component {
     }
 
     render() {
+        var numPingsUpperBound = this.props.numPingsUpperBound;
         return (
             <div className="listofpingstat">
                 {this.state.pingStatPropsList.map(function(pingStatProps) {
-                    return <PingStat {...pingStatProps} />;
+                    return <PingStat {...pingStatProps}
+                                     numPingsUpperBound={numPingsUpperBound} />;
                 })}
             </div>
         )
     }
 }
+// TODO Make props required.
 
 class PingStat extends React.Component {
     render() {
@@ -70,14 +80,14 @@ class PingStatBar extends React.Component {
             boxesMarkup.push(<div className="pingstatbarbox filled"></div>);
         }
         return (
-            <div className="pingstatbar" title={this.props.numPings}>
+            <div className="pingstatbar" title={this.props.numRecentPings}>
                 {boxesMarkup}
             </div>
         )
     }
 
     calculateNumFilledBoxes() {
-        var n = this.props.numPings / this.props.numPingsUpperBenchmark;
+        var n = this.props.numRecentPings / this.props.numPingsUpperBound;
         n = n * this.props.numBoxesToDisplay;
         n = Math.round(n);
         n = Math.max(n, 1);
@@ -113,6 +123,5 @@ class PingStatDateTime extends React.Component {
 }
 
 module.exports = {
-    ListOfPingStat: ListOfPingStat,
-    PingStat: PingStat
+    ListOfPingStat: ListOfPingStat
 };

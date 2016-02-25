@@ -8,14 +8,18 @@ var babelify = require('babelify'),
     vinylBuffer = require('vinyl-buffer'),
     vinylSource = require('vinyl-source-stream');
 
-var VENDOR_FILENAME = 'react.js';
-var COMPONENTS_FILENAME = 'components.js';
-var CSS_FILENAME = 'components.css';
+var VENDOR_FILENAME = 'js/vendor.js';
+var COMPONENTS_FILENAME = 'js/components.js';
+var CSS_FILENAME = 'css/components.css';
 var OUTPUT_DIR = 'public';
 
 var SBOX_PAGES_GLOB = './jsx/*.jsx';
 var PROD_CMPS_PATH = '../production/jsx/components.jsx';
 var PROD_CSS_PATH = '../production/scss/components.scss';
+
+function logFileCreation(filename) {
+    console.log('Creating \'' + OUTPUT_DIR + '/' + filename + '\'...');
+};
 
 gulp.task('pages', function() {
     // Inspired by https://github.com/substack/node-browserify/issues/1044#issuecomment-72384131
@@ -59,7 +63,7 @@ gulp.task('pages', function() {
 gulp.task('cmps', function() {
     logFileCreation(COMPONENTS_FILENAME);
     return browserify()
-    .external('react', 'jquery')
+    .external(['react', 'jquery'])
     .require(PROD_CMPS_PATH, {expose: 'prod-components'})
     .transform(babelify, {presets: ['es2015', 'react']})
     .bundle()
@@ -71,7 +75,8 @@ gulp.task('css', function() {
     logFileCreation(CSS_FILENAME);
     return gulp.src(PROD_CSS_PATH)
     .pipe(sass({outputStyle: 'expanded'}))
-    .pipe(gulp.dest(OUTPUT_DIR));
+    // Dunno a clean way to do this.
+    .pipe(gulp.dest(OUTPUT_DIR + '/css'));
 });
 
 gulp.task('vendor', function() {
@@ -85,6 +90,11 @@ gulp.task('vendor', function() {
     .pipe(gulp.dest(OUTPUT_DIR));
 });
 
+gulp.task('deploy', function() {
+    return gulp.src('public/{css,js}/*')
+    .pipe(gulp.dest('../production/public'));
+});
+
 gulp.task('watch', function() {
     gulp.watch(SBOX_PAGES_GLOB, ['pages']);
     gulp.watch(PROD_CMPS_PATH, ['cmps']);
@@ -95,7 +105,3 @@ gulp.task('pages-and-cmps', ['pages', 'cmps']);
 gulp.task('cmps-and-css', ['cmps', 'css']);
 gulp.task('all', ['pages', 'cmps', 'css', 'vendor']);
 gulp.task('default', ['pages']);
-
-function logFileCreation(filename) {
-    console.log('Creating \'' + OUTPUT_DIR + '/' + filename + '\'...');
-};
