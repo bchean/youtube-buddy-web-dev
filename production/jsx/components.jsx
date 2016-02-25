@@ -1,5 +1,18 @@
 var React = require('react');
 
+class ListOfPingStat extends React.Component {
+    render() {
+        // TODO Replace attribute-based data injection with ajax.
+        return (
+            <div className="listofpingstat">
+                {this.props.propsList.map(function(pingStatProps) {
+                    return <PingStat {...pingStatProps} />;
+                })}
+            </div>
+        )
+    }
+}
+
 class PingStat extends React.Component {
     render() {
         return (
@@ -18,10 +31,10 @@ class PingStatBar extends React.Component {
         var numEmptyBoxes = this.props.numBoxesToDisplay - numFilledBoxes;
         var boxesMarkup = [];
         for (var i = 0; i < numEmptyBoxes; i++) {
-            boxesMarkup.push(<PingStatBarBox />);
+            boxesMarkup.push(<div className="pingstatbarbox"></div>);
         }
         for (var i = 0; i < numFilledBoxes; i++) {
-            boxesMarkup.push(<PingStatBarBox isFilled={true} />);
+            boxesMarkup.push(<div className="pingstatbarbox filled"></div>);
         }
         return (
             <div className="pingstatbar" title={this.props.numPings}>
@@ -40,21 +53,6 @@ class PingStatBar extends React.Component {
 }
 PingStatBar.defaultProps = {
     numBoxesToDisplay: 10
-};
-
-class PingStatBarBox extends React.Component {
-    render() {
-        var className = 'pingstatbarbox';
-        if (this.props.isFilled) {
-            className += ' filled';
-        }
-        return (
-            <div className={className}></div>
-        )
-    }
-}
-PingStatBarBox.defaultProps = {
-    isFilled: false
 };
 
 class PingStatVideoLink extends React.Component {
@@ -82,5 +80,6 @@ class PingStatDateTime extends React.Component {
 }
 
 module.exports = {
+    ListOfPingStat: ListOfPingStat,
     PingStat: PingStat
 };
