@@ -7,7 +7,9 @@ $color-light-purple: #9851BF;
 $color-bold-yellow: #EBEB02;
 $color-hella-light-yellow: #FCFEA9;
 $color-light-yellow: #D2D36A;
-$color-light-grey: #AAA;
+$color-light-grey: #BBB;
+
+$radius-vert-rectangle: 50% 25%;
 
 /**
  * border-box by default, allowing for overrides.
@@ -20,27 +22,46 @@ html {
   box-sizing: inherit;
 }
 
+.listofpingstat {
+    label {
+        font-family: 'Jaldi', sans-serif;
+        color: $color-light-grey;
+    }
+}
+
 .pingstat {
-    :not(:last-child) {
+    > :not(:last-child) {
         margin-right: 8px;
     }
 }
 
 .pingstatbar {
     display: inline-block;
-
-    :not(:last-child) {
-        margin-right: 1px;
-    }
 }
 
 .pingstatbarbox {
+    margin: 0;
     display: inline-block;
     height: 0.75em;
-    width: 0.75em;
+    width: 0.375em;
 
     border: 1px solid $color-light-purple;
-    border-radius: 25%;
+
+    &:nth-child(2n+1) {
+        border-top-left-radius: $radius-vert-rectangle;
+        border-bottom-left-radius: $radius-vert-rectangle;
+        border-right: none;
+    }
+
+    &:nth-child(2n) {
+        border-top-right-radius: $radius-vert-rectangle;
+        border-bottom-right-radius: $radius-vert-rectangle;
+        border-left: none;
+
+        &:not(:last-child) {
+            margin-right: 1px;
+        }
+    }
 
     &.filled {
         background-color: $color-hellalight-purple;

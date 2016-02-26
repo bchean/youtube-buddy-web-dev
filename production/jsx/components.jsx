@@ -5,7 +5,8 @@ class ListOfPingStat extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pingStatPropsList: []
+            pingStatPropsList: [],
+            statusLabel: 'Loading...'
         };
     }
 
@@ -21,6 +22,9 @@ class ListOfPingStat extends React.Component {
             }.bind(this))
             .fail(function(jqXHR, textStatus, errThrown) {
                 // TODO Response error handling.
+                this.setState({
+                    statusLabel: 'Load error: ' + textStatus
+                });
             });
         } else if (this.props.pingStatPropsList) {
             // This prop exists only for testing purposes.
@@ -31,8 +35,10 @@ class ListOfPingStat extends React.Component {
     }
 
     updateListContents(pingStatPropsList) {
+        var newStatusLabel = pingStatPropsList.length ? null : 'No recent pings';
         this.setState({
-            pingStatPropsList: pingStatPropsList
+            pingStatPropsList: pingStatPropsList,
+            statusLabel: newStatusLabel
         });
     }
 
@@ -43,15 +49,23 @@ class ListOfPingStat extends React.Component {
     }
 
     render() {
-        var numPingsUpperBound = this.props.numPingsUpperBound;
-        return (
-            <div className="listofpingstat">
-                {this.state.pingStatPropsList.map(function(pingStatProps) {
-                    return <PingStat {...pingStatProps}
-                                     numPingsUpperBound={numPingsUpperBound} />;
-                })}
-            </div>
-        )
+        if (this.state.statusLabel) {
+            return (
+                <div className="listofpingstat">
+                    <label className="status">{this.state.statusLabel}</label>
+                </div>
+            );
+        } else {
+            var numPingsUpperBound = this.props.numPingsUpperBound;
+            return (
+                <div className="listofpingstat">
+                    {this.state.pingStatPropsList.map(function(pingStatProps) {
+                        return <PingStat {...pingStatProps}
+                                         numPingsUpperBound={numPingsUpperBound} />;
+                    })}
+                </div>
+            );
+        }
     }
 }
 // TODO Make props required.
@@ -95,7 +109,7 @@ class PingStatBar extends React.Component {
     }
 }
 PingStatBar.defaultProps = {
-    numBoxesToDisplay: 10
+    numBoxesToDisplay: 20
 };
 
 class PingStatVideoLink extends React.Component {
