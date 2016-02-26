@@ -2,26 +2,16 @@ var babelify = require('babelify'),
     browserify = require('browserify'),
     gulp = require('gulp'),
     rename = require('gulp-rename'),
-    sass = require('gulp-sass'),
-    through2 = require('through2'),
-    uglify = require('gulp-uglify'),
-    vinylBuffer = require('vinyl-buffer'),
-    vinylSource = require('vinyl-source-stream');
+    through2 = require('through2');
 
-var VENDOR_FILENAME = 'js/vendor.js';
-var COMPONENTS_FILENAME = 'js/components.js';
-var CSS_FILENAME = 'css/components.css';
 var OUTPUT_DIR = 'public';
-
 var SBOX_PAGES_GLOB = './jsx/*.jsx';
-var PROD_CMPS_PATH = '../production/jsx/components.jsx';
-var PROD_CSS_PATH = '../production/scss/components.scss';
 
 function logFileCreation(filename) {
     console.log('Creating \'' + OUTPUT_DIR + '/' + filename + '\'...');
 };
 
-gulp.task('pages', function() {
+gulp.task('pages', ['pull-css', 'pull-js'], function() {
     // Inspired by https://github.com/substack/node-browserify/issues/1044#issuecomment-72384131
     // Generate sandbox page for each individual jsx file.
     return gulp.src(SBOX_PAGES_GLOB)
@@ -37,14 +27,14 @@ gulp.task('pages', function() {
                 // Wrap js in an html page.
                 var browserifiedJs = buf.toString();
                 var newPageMarkup = '<html><body>' +
-                    '<link href="' + CSS_FILENAME + '" rel="stylesheet">' +
+                    '<link href="css/components.css" rel="stylesheet">' +
                     '<link href="https://fonts.googleapis.com/css?family=Jaldi:700|Yantramanav" rel="stylesheet" type="text/css">' +
                     '<div id="css"></div>' +
                     '<div id="cmp1"></div>' +
                     '<div id="cmp2"></div>' +
                     '<div id="cmp3"></div>' +
-                    '<script src="' + VENDOR_FILENAME + '"></script>'+
-                    '<script src="' + COMPONENTS_FILENAME + '"></script>'+
+                    '<script src="js/vendor.js"></script>'+
+                    '<script src="js/components.js"></script>'+
                     '<script>' + browserifiedJs + '</script>' +
                     '</body></html>';
                 vinylFile.contents = new Buffer(newPageMarkup);
@@ -60,48 +50,16 @@ gulp.task('pages', function() {
     .pipe(gulp.dest(OUTPUT_DIR));
 });
 
-gulp.task('cmps', function() {
-    logFileCreation(COMPONENTS_FILENAME);
-    return browserify()
-    .external(['react', 'jquery'])
-    .require(PROD_CMPS_PATH, {expose: 'prod-components'})
-    .transform(babelify, {presets: ['es2015', 'react']})
-    .bundle()
-    .pipe(vinylSource(COMPONENTS_FILENAME))
-    .pipe(gulp.dest(OUTPUT_DIR));
+gulp.task('pull-css', function() {
+    return gulp.src('../production/public/css/components.css')
+    .pipe(gulp.dest('public/css'));
 });
 
-gulp.task('css', function() {
-    logFileCreation(CSS_FILENAME);
-    return gulp.src(PROD_CSS_PATH)
-    .pipe(sass({outputStyle: 'expanded'}))
-    // Dunno a clean way to do this.
-    .pipe(gulp.dest(OUTPUT_DIR + '/css'));
-});
-
-gulp.task('vendor', function() {
-    logFileCreation(VENDOR_FILENAME);
-    return browserify()
-    .require(['react', 'react-dom', 'jquery'])
-    .bundle()
-    .pipe(vinylSource(VENDOR_FILENAME))
-    .pipe(vinylBuffer())
-    .pipe(uglify())
-    .pipe(gulp.dest(OUTPUT_DIR));
-});
-
-gulp.task('deploy', function() {
-    return gulp.src('public/{css,js}/*')
-    .pipe(gulp.dest('../production/public'));
+gulp.task('pull-js', function() {
+    return gulp.src('../production/public/js/{components,vendor}.js')
+    .pipe(gulp.dest('public/js'));
 });
 
 gulp.task('watch', function() {
     gulp.watch(SBOX_PAGES_GLOB, ['pages']);
-    gulp.watch(PROD_CMPS_PATH, ['cmps']);
-    gulp.watch(PROD_CSS_PATH, ['css']);
 });
-
-gulp.task('pages-and-cmps', ['pages', 'cmps']);
-gulp.task('cmps-and-css', ['cmps', 'css']);
-gulp.task('all', ['pages', 'cmps', 'css', 'vendor']);
-gulp.task('default', ['pages']);

@@ -3,32 +3,64 @@ var babelify = require('babelify'),
     gulp = require('gulp'),
     sass = require('gulp-sass'),
     uglify = require('gulp-uglify'),
+    vinylBuffer = require('vinyl-buffer'),
     vinylSource = require('vinyl-source-stream');
 
-var INDEXJSX_FILEPATH = 'jsx/index.jsx',
-    INDEXSCSS_FILEPATH = 'scss/index.scss';
+var INDEX_JSX_FILEPATH = './jsx/index.jsx',
+    CMPS_JSX_FILEPATH = './jsx/components.jsx',
+    SCSS_GLOB = './scss/*.scss';
 
-gulp.task('page', function() {
-    console.log('Creating \'public/js/index.js\'...');
+var JS_OUTPUT_DIR = 'public/js',
+    CSS_OUTPUT_DIR = 'public/css';
+
+gulp.task('index', function() {
+    var outputDir = JS_OUTPUT_DIR;
+    console.log('Compiling index.jsx -> \'' + outputDir + '\'...');
     return browserify()
-    .add(INDEXJSX_FILEPATH)
+    .add(INDEX_JSX_FILEPATH)
     .transform(babelify, {presets: ['es2015', 'react']})
     .external(['react', 'react-dom', 'prod-components'])
     .bundle()
     .pipe(vinylSource('index.js'))
-    .pipe(gulp.dest('public/js'));
+    .pipe(gulp.dest(outputDir));
+});
+
+gulp.task('cmps', function() {
+    var outputDir = JS_OUTPUT_DIR;
+    console.log('Compiling components.jsx -> \'' + outputDir + '\'...');
+    return browserify()
+    .external(['react', 'jquery'])
+    .require(CMPS_JSX_FILEPATH, {expose: 'prod-components'})
+    .transform(babelify, {presets: ['es2015', 'react']})
+    .bundle()
+    .pipe(vinylSource('components.js'))
+    .pipe(gulp.dest(outputDir));
 });
 
 gulp.task('css', function() {
-    console.log('Creating \'public/css/index.css\'...');
-    return gulp.src(INDEXSCSS_FILEPATH)
+    var outputDir = CSS_OUTPUT_DIR;
+    console.log('Compiling scss -> \'' + outputDir + '\'...');
+    return gulp.src(SCSS_GLOB)
     .pipe(sass({outputStyle: 'expanded'}))
-    .pipe(gulp.dest('public/css'));
+    .pipe(gulp.dest(outputDir));
+});
+
+gulp.task('vendor', function() {
+    var outputDir = JS_OUTPUT_DIR;
+    console.log('Bundling vendor.js -> \'' + outputDir + '\'...');
+    return browserify()
+    .require(['react', 'react-dom', 'jquery'])
+    .bundle()
+    .pipe(vinylSource('vendor.js'))
+    .pipe(vinylBuffer())
+    .pipe(uglify())
+    .pipe(gulp.dest(outputDir));
 });
 
 gulp.task('watch', function() {
-    gulp.watch(INDEXJSX_FILEPATH, ['page']);
-    gulp.watch(INDEXSCSS_FILEPATH, ['css']);
+    gulp.watch(INDEX_JSX_FILEPATH, ['index']);
+    gulp.watch(CMPS_JSX_FILEPATH, ['cmps']);
+    gulp.watch(SCSS_GLOB, ['css']);
 });
 
-gulp.task('all', ['page', 'css']);
+gulp.task('all', ['index', 'cmps', 'css', 'vendor']);
