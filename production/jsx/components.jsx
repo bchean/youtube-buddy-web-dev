@@ -58,17 +58,25 @@ class ListOfPingStat extends React.Component {
         } else {
             var numPingsUpperBound = this.props.numPingsUpperBound;
             return (
+                // Using a globally unique value (youtube id) for the key since these PingStats may move around later.
                 <div className="listofpingstat">
                     {this.state.pingStatPropsList.map(function(pingStatProps) {
                         return <PingStat {...pingStatProps}
-                                         numPingsUpperBound={numPingsUpperBound} />;
+                                         numPingsUpperBound={numPingsUpperBound}
+                                         key={pingStatProps.youtubeId} />;
                     })}
                 </div>
             );
         }
     }
 }
-// TODO Make props required.
+ListOfPingStat.propTypes = {
+    restEndpoint: React.PropTypes.string.isRequired,
+    sinceDateTime: React.PropTypes.string.isRequired,
+    numPingsUpperBound: React.PropTypes.number.isRequired,
+    // Optional prop for testing purposes.
+    pingStatPropsList: React.PropTypes.array
+};
 
 class PingStat extends React.Component {
     render() {
@@ -87,11 +95,12 @@ class PingStatBar extends React.Component {
         var numFilledBoxes = this.calculateNumFilledBoxes();
         var numEmptyBoxes = this.props.numBoxesToDisplay - numFilledBoxes;
         var boxesMarkup = [];
+        // Using a weak key (index) since the boxes will never move around.
         for (var i = 0; i < numEmptyBoxes; i++) {
-            boxesMarkup.push(<div className="pingstatbarbox"></div>);
+            boxesMarkup.push(<div className="pingstatbarbox" key={i}></div>);
         }
-        for (var i = 0; i < numFilledBoxes; i++) {
-            boxesMarkup.push(<div className="pingstatbarbox filled"></div>);
+        for (var i = numEmptyBoxes; i < this.props.numBoxesToDisplay; i++) {
+            boxesMarkup.push(<div className="pingstatbarbox filled" key={i}></div>);
         }
         return (
             <div className="pingstatbar" title={this.props.numRecentPings}>
@@ -108,6 +117,9 @@ class PingStatBar extends React.Component {
         return n;
     }
 }
+PingStatBar.propTypes = {
+    numRecentPings: React.PropTypes.number.isRequired
+};
 PingStatBar.defaultProps = {
     numBoxesToDisplay: 20
 };
@@ -124,6 +136,10 @@ class PingStatVideoLink extends React.Component {
         )
     }
 }
+PingStatVideoLink.propTypes = {
+    youtubeId: React.PropTypes.string.isRequired,
+    title: React.PropTypes.string.isRequired
+};
 
 class PingStatDateTime extends React.Component {
     render() {
@@ -135,6 +151,9 @@ class PingStatDateTime extends React.Component {
         )
     }
 }
+PingStatDateTime.propTypes = {
+    dateTimeLastPing: React.PropTypes.string.isRequired
+};
 
 module.exports = {
     ListOfPingStat: ListOfPingStat

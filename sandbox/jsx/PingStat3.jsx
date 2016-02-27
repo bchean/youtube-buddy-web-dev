@@ -2,24 +2,23 @@ var React = require('react'),
     ReactDOM = require('react-dom'),
     ListOfPingStat = require('prod-components').ListOfPingStat;
 
-var numPingsUpperBenchmark = 21;
-
 ReactDOM.render(
     <ListOfPingStat pingStatPropsList={[
         {
-            numPings: 19,
-            numPingsUpperBenchmark: numPingsUpperBenchmark,
+            numRecentPings: 19,
             youtubeId: 'a',
             title: 'Lorem ipsum dolor',
-            dateTimeLastPing: Date.now()
+            dateTimeLastPing: new Date().toString()
         },
         {
-            numPings: 5,
-            numPingsUpperBenchmark: numPingsUpperBenchmark,
+            numRecentPings: 5,
             youtubeId: 'b',
             title: 'sit amet, consectetur adipiscing elit',
-            dateTimeLastPing: Date.now()
-        }]} />,
+            dateTimeLastPing: new Date().toString()
+        }]}
+        restEndpoint={''}
+        sinceDateTime={''}
+        numPingsUpperBound={21} />,
     document.getElementById('cmp1'));
 
 var extraCss = 'body { background-color: #3f1255; }';
