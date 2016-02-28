@@ -1,4 +1,5 @@
 var React = require('react'),
+    moment = require('moment'),
     $ = require('jquery');
 
 class ListOfPingStat extends React.Component {
@@ -103,7 +104,7 @@ class PingStatBar extends React.Component {
             boxesMarkup.push(<div className="pingstatbarbox filled" key={i}></div>);
         }
         return (
-            <div className="pingstatbar" title={this.props.numRecentPings}>
+            <div className="pingstatbar" title={this.calculateApproxTimeWatched()}>
                 {boxesMarkup}
             </div>
         )
@@ -115,6 +116,38 @@ class PingStatBar extends React.Component {
         n = Math.round(n);
         n = Math.max(n, 1);
         return n;
+    }
+
+    calculateApproxTimeWatched() {
+        var asSeconds = this.props.numRecentPings * this.SECONDS_PER_PING();
+        var duration = moment.duration(asSeconds, 'seconds');
+        // Since everything has at least one ping, this is guaranteed to be nonzero.
+        var seconds = duration.seconds();
+        var timeWatchedStr = this.formatDurationStr(seconds, 'second');
+
+        var minutes = duration.minutes();
+        if (minutes) {
+            timeWatchedStr = this.formatDurationStr(minutes, 'minute') + ', ' + timeWatchedStr;
+        }
+
+        var hours = duration.hours();
+        if (hours) {
+            timeWatchedStr = this.formatDurationStr(hours, 'hour') + ', ' + timeWatchedStr;
+        }
+
+        return timeWatchedStr;
+    }
+
+    formatDurationStr(n, unit) {
+        if (n === 1) {
+            return n + ' ' + unit;
+        } else {
+            return n + ' ' + unit + 's';
+        }
+    }
+
+    SECONDS_PER_PING() {
+        return 5;
     }
 }
 PingStatBar.propTypes = {
@@ -143,10 +176,12 @@ PingStatVideoLink.propTypes = {
 
 class PingStatDateTime extends React.Component {
     render() {
-        var dateTimeCurrentLocale = new Date(this.props.dateTimeLastPing).toLocaleString();
+        var timeago = moment(this.props.dateTimeLastPing).fromNow();
+        // Replace 'a' and 'an' with the number 1, except for 'a few seconds ago'.
+        var fmtTimeago = timeago.replace(/(?:(?:a )|(?:an ))([mhdy])/, '1 $1');
         return (
             <div className="pingstatdatetime">
-                <span>{dateTimeCurrentLocale}</span>
+                <span>{fmtTimeago}</span>
             </div>
         )
     }
