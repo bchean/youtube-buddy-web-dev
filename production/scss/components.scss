@@ -1,26 +1,6 @@
-// TODO Figure out production strategy...
-@import 'https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css';
-
-// COLORS
-$color-hellalight-purple: #A90DFF;
-$color-light-purple: #9851BF;
-$color-bold-yellow: #EBEB02;
-$color-hella-light-yellow: #FCFEA9;
-$color-light-yellow: #D2D36A;
-$color-light-grey: #BBB;
+@import 'common';
 
 $radius-vert-rectangle: 50% 25%;
-
-/**
- * border-box by default, allowing for overrides.
- * https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
- */
-html {
-  box-sizing: border-box;
-}
-*, *:before, *:after {
-  box-sizing: inherit;
-}
 
 .listofpingstat {
     label {

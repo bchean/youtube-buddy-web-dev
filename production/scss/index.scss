@@ -1,12 +1,25 @@
-// TODO Figure out production strategy...
-@import 'https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css';
+@import 'common';
 
-$color-dark-purple: #3F1255;
-$color-light-grey: #BBB;
+html {
+    height: 100%;
+}
 
 body {
-    background-color: $color-dark-purple;
+    height: 100%;
+    background-color: $color-verydark-purple;
     // TODO Find a different sans-serif font.
     font-family: 'Jaldi', sans-serif;
     color: $color-light-grey;
+}
+
+.container {
+    min-height: 100%;
+    width: 70%;
+    margin-left: 30%;
+    background-color: $color-dark-purple;
+    padding: .5em;
+}
+
+.pings-data {
+    margin-top: 1em;
 }
