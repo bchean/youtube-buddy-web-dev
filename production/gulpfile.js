@@ -8,7 +8,8 @@ var babelify = require('babelify'),
 
 var INDEX_JSX_FILEPATH = './jsx/index.jsx',
     CMPS_JSX_FILEPATH = './jsx/components.jsx',
-    SCSS_GLOB = './scss/*.scss';
+    SCSS_GLOB = './scss/*.scss',
+    JS_GLOB = './js/*.js';
 
 var JS_OUTPUT_DIR = 'public/js',
     CSS_OUTPUT_DIR = 'public/css';
@@ -45,6 +46,13 @@ gulp.task('css', function() {
     .pipe(gulp.dest(outputDir));
 });
 
+gulp.task('js', function() {
+    var outputDir = JS_OUTPUT_DIR;
+    console.log('Copying js -> \'' + outputDir + '\'...');
+    return gulp.src(JS_GLOB)
+    .pipe(gulp.dest(outputDir));
+});
+
 gulp.task('vendor', function() {
     var outputDir = JS_OUTPUT_DIR;
     console.log('Bundling vendor.js -> \'' + outputDir + '\'...');
@@ -61,6 +69,7 @@ gulp.task('watch', function() {
     gulp.watch(INDEX_JSX_FILEPATH, ['index']);
     gulp.watch(CMPS_JSX_FILEPATH, ['cmps']);
     gulp.watch(SCSS_GLOB, ['css']);
+    gulp.watch(JS_GLOB, ['js']);
 });
 
 gulp.task('all', ['index', 'cmps', 'css', 'vendor']);

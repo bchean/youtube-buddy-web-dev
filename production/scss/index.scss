@@ -8,6 +8,7 @@ body {
     min-width: $break-tiny;
     height: 100%;
     background-color: $color-verydark-purple;
+    overflow-x: hidden;
     // TODO Find a different sans-serif font.
     font-family: 'Jaldi', sans-serif;
     color: $color-light-grey;
@@ -15,7 +16,7 @@ body {
 
 .container {
     min-height: 100%;
-    background-color: $color-dark-purple;
+    background-color: $bg-dark-purple-translucent;
     padding: .75em;
 }
 

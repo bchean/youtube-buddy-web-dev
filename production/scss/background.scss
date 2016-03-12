@@ -1,0 +1,13 @@
+@import 'common';
+
+$shape-width: 40px;
+
+.triangle {
+    $side-length: calc(#{$shape-width} / 2);
+    width: 0;
+    border-left: $side-length solid transparent;
+    border-right: $side-length solid transparent;
+    border-bottom: calc(#{$shape-width} * .866) solid $color-hellalight-purple;
+
+    position: absolute;
+}
