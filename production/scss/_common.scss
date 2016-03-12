@@ -11,3 +11,13 @@ $color-light-yellow: #D2D36A;
 $color-bold-yellow: #EBEB02;
 // -- GREY
 $color-light-grey: #BBB;
+
+// BREAKPOINTS
+$break-med-large: 1024px;
+$break-tiny: 320px;
+
+// MEDIA QUERIES
+$media-large: 'only screen and (min-width: #{$break-med-large + 1})';
+
+// OTHER SIZES
+$width-psbar-plus-timeago: 212px;

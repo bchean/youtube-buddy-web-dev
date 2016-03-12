@@ -52,9 +52,20 @@ $radius-vert-rectangle: 50% 25%;
     display: inline-block;
     font-family: 'Jaldi', sans-serif;
 
+    max-width: calc(100% - #{$width-psbar-plus-timeago});
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    // http://stackoverflow.com/questions/20310690/overflowhidden-on-inline-block-adds-height-to-parent
+    vertical-align: top;
+
+    // We want the ellipsis to be yellow too.
+    // TODO Somehow make the ellipsis clickable.
+    color: $color-bold-yellow;
+
     a {
-        color: $color-bold-yellow;
         text-decoration: none;
+        color: $color-bold-yellow;
     }
 }
 

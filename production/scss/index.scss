@@ -5,6 +5,7 @@ html {
 }
 
 body {
+    min-width: $break-tiny;
     height: 100%;
     background-color: $color-verydark-purple;
     // TODO Find a different sans-serif font.
@@ -14,12 +15,17 @@ body {
 
 .container {
     min-height: 100%;
-    width: 70%;
-    margin-left: 30%;
     background-color: $color-dark-purple;
-    padding: .5em;
+    padding: .75em;
 }
 
 .pings-data {
     margin-top: 1em;
+}
+
+@media #{$media-large} {
+    .container {
+        width: 75%;
+        margin-left: 25%;
+    }
 }
