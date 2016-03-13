@@ -25,8 +25,22 @@ var makeTriangle = function makeTriangle() {
     $('.shapes').append(newTriangleElement);
 };
 
-var numTriangles = Math.round(Math.sqrt(getViewportWidth() * getViewportHeight()) / 100);
+$(function() {
+    var numTriangles = Math.round(Math.sqrt(getViewportWidth() * getViewportHeight()) / 100);
 
-for (var i = 0; i < numTriangles; i++) {
-    makeTriangle();
-}
+    for (var i = 0; i < numTriangles; i++) {
+        makeTriangle();
+    }
+});
+
+$(window).scroll(function() {
+    // Change top based on scrollTop for parallax effect.
+    var scrollTop = window.scrollY;
+    var newShapesScrollTop = scrollTop / 2;
+    // Ensure shapes div is as big as possible, without extending past content div.
+    var newShapesHeight = 'calc(' + scrollTop + 'px - ' + newShapesScrollTop + 'px + 100vh)';
+    $('.shapes').css({
+        'top': newShapesScrollTop + 'px',
+        'height': newShapesHeight
+    });
+});

@@ -2,6 +2,16 @@
 
 $shape-width: 40px;
 
+// See js/background.js for dynamic top and height changes.
+.shapes {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    min-height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
 .triangle {
     $side-length: calc(#{$shape-width} / 2);
     width: 0;
