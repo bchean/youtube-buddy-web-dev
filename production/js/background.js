@@ -1,46 +1,39 @@
 var $ = require('jquery');
 
-var getViewportWidth = function getViewportWidth() {
-    return $(window).width();
+var viewport = {
+    width: $(window).width(),
+    height: $(window).height()
 };
 
-var getViewportHeight = function getViewportHeight() {
-    return $(window).height();
-}
+// For various reasons, only part of the shapes div is visible. See background.scss.
+// scale = 1 - (translateZ / perspective)
+var shapesLayerScale = 2/3;
+var shapesLayer = {
+    width: viewport.width * shapesLayerScale,
+    height: viewport.height * shapesLayerScale,
+    x: viewport.width * (1 - shapesLayerScale) / 2,
+    y: viewport.height * (1 - shapesLayerScale) / 2,
+};
 
 var makeTriangle = function makeTriangle() {
     var newTriangleElement = $('<div class="triangle"></div>');
-    var x = Math.round(Math.random() * getViewportWidth() - 15);
-    var y = Math.round(Math.random() * getViewportHeight() - 15);
-    var z = Math.round(Math.random() * -10) - 1;
-    var turns = Math.random();
+    var x = shapesLayer.x + Math.floor(Math.random() * shapesLayer.width - 20);
+    var y = shapesLayer.y + Math.floor(Math.random() * shapesLayer.height - 20);
+    var deg = Math.floor(Math.random() * 4) * 30 + 15;
 
     newTriangleElement.css({
         'top': y + 'px',
         'left': x + 'px',
-        'z-index': z,
-        'transform': 'rotate(' + turns + 'turn)'
+        'transform': 'rotate(' + deg + 'deg)'
     });
 
     $('.shapes').append(newTriangleElement);
 };
 
 $(function() {
-    var numTriangles = Math.round(Math.sqrt(getViewportWidth() * getViewportHeight()) / 100);
+    var numTriangles = Math.floor(Math.sqrt(shapesLayer.width * shapesLayer.height) / 100);
 
     for (var i = 0; i < numTriangles; i++) {
         makeTriangle();
     }
-});
-
-$(window).scroll(function() {
-    // Change top based on scrollTop for parallax effect.
-    var scrollTop = window.scrollY;
-    var newShapesScrollTop = scrollTop / 2;
-    // Ensure shapes div is as big as possible, without extending past content div.
-    var newShapesHeight = 'calc(' + scrollTop + 'px - ' + newShapesScrollTop + 'px + 100vh)';
-    $('.shapes').css({
-        'top': newShapesScrollTop + 'px',
-        'height': newShapesHeight
-    });
 });

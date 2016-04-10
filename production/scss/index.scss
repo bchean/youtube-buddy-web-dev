@@ -14,7 +14,27 @@ body {
     color: $color-light-grey;
 }
 
-.container {
+// http://keithclark.co.uk/articles/pure-css-parallax-websites/
+.parallax-container {
+    perspective: 3px;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.parallax-layer {
+    position: absolute;
+    top: 0;
+}
+.parallax-back {
+    // Impossible to do slow-scrolling layer via translate back and scale up so we're doing a fast-scrolling layer via translate forward.
+    transform: translateZ(1px);
+    z-index: -1;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.content {
     min-height: 100%;
     background-color: $bg-dark-purple-translucent;
     padding: .75em;
@@ -25,7 +45,7 @@ body {
 }
 
 @media #{$media-large} {
-    .container {
+    .content {
         width: 75%;
         margin-left: 25%;
     }
