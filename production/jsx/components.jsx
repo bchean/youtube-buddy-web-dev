@@ -20,6 +20,7 @@ class ListOfPingStat extends React.Component {
             })
             .done(function(res) {
                 this.updateListContents(res);
+                $(window).trigger('ytb_pingListLoad');
             }.bind(this))
             .fail(function(jqXHR, textStatus, errThrown) {
                 // TODO Response error handling.
@@ -30,6 +31,7 @@ class ListOfPingStat extends React.Component {
         } else if (this.props.pingStatPropsList) {
             // This prop exists only for testing purposes.
             this.updateListContents(this.props.pingStatPropsList);
+            $(window).trigger('ytb_pingListLoad');
         } else {
             throw new Error('Invalid props passed to component.');
         }

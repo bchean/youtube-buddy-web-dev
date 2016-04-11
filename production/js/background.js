@@ -5,9 +5,9 @@ var viewport = {
     height: $(window).height()
 };
 
-// For various reasons, only part of the shapes div is visible. See background.scss.
+// For various reasons, only part of the shapes div is visible. See index.scss.
 // scale = 1 - (translateZ / perspective)
-var shapesLayerScale = 2/3;
+var shapesLayerScale = 3/5;
 var shapesLayer = {
     width: viewport.width * shapesLayerScale,
     height: viewport.height * shapesLayerScale,
@@ -15,11 +15,12 @@ var shapesLayer = {
     y: viewport.height * (1 - shapesLayerScale) / 2,
 };
 
-var makeTriangle = function makeTriangle() {
+var makeTriangle = function makeTriangle(minY, maxY) {
     var newTriangleElement = $('<div class="triangle"></div>');
-    var x = shapesLayer.x + Math.floor(Math.random() * shapesLayer.width - 20);
-    var y = shapesLayer.y + Math.floor(Math.random() * shapesLayer.height - 20);
-    var deg = Math.floor(Math.random() * 4) * 30 + 15;
+    var x = shapesLayer.x + randomInt(shapesLayer.width) - 20;
+    var rangeY = maxY - minY;
+    var y = minY + randomInt(rangeY) - 20;
+    var deg = randomInt(4) * 30 + 15;
 
     newTriangleElement.css({
         'top': y + 'px',
@@ -30,10 +31,28 @@ var makeTriangle = function makeTriangle() {
     $('.shapes').append(newTriangleElement);
 };
 
-$(function() {
-    var numTriangles = Math.floor(Math.sqrt(shapesLayer.width * shapesLayer.height) / 100);
+var randomInt = function randomInt(max) {
+    return Math.floor(Math.random() * max);
+};
 
+var makeTriangles = function makeTriangles(minY, maxY) {
+    var rangeY = maxY - minY;
+    var numTriangles = Math.floor(Math.sqrt(shapesLayer.width * rangeY) / 60);
     for (var i = 0; i < numTriangles; i++) {
-        makeTriangle();
+        makeTriangle(minY, maxY);
     }
+};
+
+var enlargeShapesDiv = function enlargeShapesDiv() {
+    var oldHeight = $('.shapes').height();
+    var newHeight = $('.content').height();
+    $('.shapes').css('height', newHeight + 'px');
+    makeTriangles(oldHeight, newHeight);
+};
+
+$(function() {
+    makeTriangles(shapesLayer.y, shapesLayer.height);
+
+    enlargeShapesDiv();
+    $(window).on('ytb_pingListLoad', enlargeShapesDiv);
 });

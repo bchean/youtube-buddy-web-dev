@@ -16,7 +16,7 @@ body {
 
 // http://keithclark.co.uk/articles/pure-css-parallax-websites/
 .parallax-container {
-    perspective: 3px;
+    perspective: 5px;
     height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
@@ -27,7 +27,7 @@ body {
 }
 .parallax-back {
     // Impossible to do slow-scrolling layer via translate back and scale up so we're doing a fast-scrolling layer via translate forward.
-    transform: translateZ(1px);
+    transform: translateZ(2px);
     z-index: -1;
     width: 100vw;
     height: 100vh;
